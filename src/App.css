@@ -1,3 +1,43 @@
 .center-text {
   text-align: center;
 }
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  max-width: 200px;
+  margin-bottom: 20px;
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  border: 5px solid turquoise;
+  border-left: 5px solid transparent;
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  animation: rotate 1.5s linear infinite;
+}
+
+.attendant-data {
+  display: flex;
+  gap: 4px;
+  border: 1px solid black;
+  margin-bottom: 4px;
+}
