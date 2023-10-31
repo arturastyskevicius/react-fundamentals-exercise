@@ -4,6 +4,10 @@ import Button from "./Button";
 import Input from "./Input";
 import Select from "./Select";
 
+// It would be better instead of having a `setFormData` prop to have an `onChange` prop
+// which would be called when the input changes and would return the new form data.
+// In General you could store formData in this component instead of App.js (separation of concerns)
+// then only onSubmit woul be needed while handleSubmit, setFormData and formData could be removed.
 const Form = ({
   handleSubmit,
   formData,
@@ -11,6 +15,8 @@ const Form = ({
   selectOptions,
   submitDisabled,
 }) => {
+  // These functions can be simplified to a single function handleInputChange
+  // which would look something like (e) => setFormData(prev => ({...prev, [e.target.name]: e.target.value }))
   const handleNameChange = (e) => {
     setFormData((prev) => ({ ...prev, name: e.target.value }));
   };
@@ -51,6 +57,7 @@ const Form = ({
         onChange={handleJobTitleChange}
         value={formData.jobTitle}
       />
+      {/* Some empty spaces here can be removed */}
 
       <Input
         type="text"
@@ -63,6 +70,7 @@ const Form = ({
         submitDisabled={submitDisabled}
         type="submit"
         text="Submit Form"
+        // The onClick handler is not needed since submit is handled by the form onSubmit handler
         onClick={() => {}}
       />
     </form>
