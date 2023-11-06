@@ -1,5 +1,7 @@
 import React from "react";
 
+// Simple and effective 🤘
+// Rename to Attendant to keep it even more simple.
 const AttendantData = ({ name, lastName, jobTitle, age }) => {
   return (
     <div className="attendant-data">

@@ -7,10 +7,11 @@ import AttendantData from "./components/AttendantData";
 
 function App() {
   const [isJobTitlesLoading, setIsJobTitlesLoading] = useState(true);
-  const [isPostLoading, setIsPostLoading] = useState(false);
-  const [isPostError, setIsPostError] = useState(false);
+  const [isPostLoading, setIsPostLoading] = useState(false); // Could be made more clear what is loading. e.g. isAttendantUploadLoading
+  const [isPostError, setIsPostError] = useState(false); // This variable could be removed since errorText by itself is enough.
   const [errorText, setErrorText] = useState("");
   const [isAttendantDataLoading, setIsAttendantDataLoading] = useState(true);
+  // Great stuff 🤘 This is the most common and generic approach to storing form data
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -18,22 +19,28 @@ function App() {
     jobTitle: "",
     age: "",
   });
+  // attendantsData or attendants (plural) to make it clear that it is an array
   const [attendantData, setAttendantData] = useState(null);
+  // I think it would have made it easier to go with just one attendant data state.
+  // Optimistic api calls were not the intention of the exercise but interesting approach regardless.
   const [newAttendantData, setNewAttendantData] = useState(attendantData);
 
-  const [selectOptions, setSelectOptions] = useState([]);
+  const [selectOptions, setSelectOptions] = useState([]); // This can be named jobTitles for clarity
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // the loading function can be set right before and after the api call
     setIsPostLoading(true);
 
+    // Can be renamed to newAttendant
     const formDataWithId = {
       ...formData,
       id: formData.name + "_" + formData.lastName,
     };
 
+    // Clarify variable attendantAlreadyExists
     const alreadyExists = newAttendantData
-      ? newAttendantData.find((el) => el.id === formDataWithId.id)
+      ? newAttendantData.find((el) => el.id === formDataWithId.id) // instead of find, .some can be used
       : false;
 
     if (alreadyExists) {
@@ -56,6 +63,7 @@ function App() {
       return;
     }
     setNewAttendantData((prev) => {
+      // Can be simplified to return prev ? [...prev, formDataWithId] : [formDataWithId]
       if (prev) {
         const prevArr = Array.from(prev);
 
@@ -68,10 +76,12 @@ function App() {
     });
 
     const postAttendant = async () => {
+      // To keep it consistent (like in the useEffect), name this addAttendantResponse
       const addedAttendant = await addAttendant(formData);
       setIsPostLoading(false);
 
       if (!addedAttendant) {
+        // This error can be handled e.g. setting the error text state
         throw new Error("Unable to add attendant.");
       }
     };
@@ -80,7 +90,10 @@ function App() {
   };
 
   useEffect(() => {
+    // fetchJobTitles and fetchAttendantData functions can have their separate
+    // useEffects to keep the code more readable (which will also simplify `fetchJobTitles` logic)
     const fetchJobTitles = async () => {
+      // Instead of res it can be named jobTitlesReponse to keep it more readable
       const res = await getJobTitles();
 
       if (res.data && selectOptions.length === 0) {
@@ -110,6 +123,28 @@ function App() {
       <h1 className="center-text">2023 React Fundamentals Workshop</h1>
       <div>Add code here</div>
 
+      {/* This whole section can be extracted to renderForm, renderAttendants functions to keep it super clean.
+          e.g.
+          const renderForm = () => {
+            if (isAttendantDataLoading || isJobTitlesLoading) { 
+              return <LoadingSpinner />
+            }
+
+            return (
+              <Form
+                formData={formData}
+                setFormData={setFormData}
+                handleSubmit={handleSubmit}
+                selectOptions={selectOptions}
+                submitDisabled={isPostLoading}
+              />
+            )
+          }
+
+          and then inside the component return:
+
+          {renderForm()}
+      */}
       {isAttendantDataLoading || isJobTitlesLoading ? (
         <LoadingSpinner />
       ) : (
@@ -123,7 +158,7 @@ function App() {
             submitDisabled={isPostLoading}
           />
           {newAttendantData
-            ?.sort((a, b) => a.age - b.age)
+            ?.sort((a, b) => a.age - b.age) //
             .map((attendant) => (
               <AttendantData
                 key={`${attendant.name}_${attendant.lastName}`}
